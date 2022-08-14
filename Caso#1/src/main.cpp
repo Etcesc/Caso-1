@@ -1,43 +1,42 @@
 #include <iostream>
 using namespace std;
  
-#define V 5 // Cantidad de vertices en el mapa
+#define Vertc 7 // cantidad de vertices en el mapa
  
 void solucion(int color[]);
    
-bool isSafe(int v, bool mapa[V][V],
-            int color[], int c)
+bool verif(int vertx, bool mapa[Vertc][Vertc],
+            int color[], int vertCol)
 {
-    for(int i = 0; i < V; i++)
-        if (mapa[v][i] && c == color[i])
+    for(int cont = 0; cont < Vertc; cont++)
+        if (mapa[vertx][cont] && vertCol == color[cont])
             return false;
              
     return true;
 }
  
-/* Funcion recursiva para resolver el problema de m colores */
-bool colorearUtil(bool mapa[V][V], int n, int color[], int v)
+// funcion recursiva para resolver el problema de n colores
+bool colorearUtil(bool mapa[Vertc][Vertc], int colorAmnt, int color[], int vertx)
 {   
     // si a todos los vertices se les asigna un color: true 
-    if (v == V)
+    if (vertx == Vertc)
         return true;
  
-    // considerar vertice v, intentar diferentes colores
-    for(int c = 1; c <= n; c++)
+    // considerar vertice vertx, intentar diferentes colores
+    for(int vertCol = 1; vertCol <= colorAmnt; vertCol++)
     {
          
         // verificar asignacion de color
-        if (isSafe(v, mapa, color, c))
+        if (verif(vertx, mapa, color, vertCol))
         {
-            color[v] = c;
+            color[vertx] = vertCol;
  
             //asignar color al resto de vertices
-            if (colorearUtil(
-                mapa, n, color, v + 1) == true)
+            if (colorearUtil(mapa, colorAmnt, color, vertx + 1) == true)
                 return true;
  
             // si color no funciona, removerlo
-            color[v] = 0;
+            color[vertx] = 0;
         }
     }
  
@@ -45,46 +44,50 @@ bool colorearUtil(bool mapa[V][V], int n, int color[], int v)
     return false;
 }
  
-bool colorear(bool mapa[V][V], int n)
+bool colorear(bool mapa[Vertc][Vertc], int colorAmnt)
 {
      
-    int color[V];
-    for(int i = 0; i < V; i++)
-        color[i] = 0;
+    int color[Vertc];
+    for(int cont = 0; cont < Vertc; cont++)
+        color[cont] = 0;
  
-    if (colorearUtil(mapa, n, color, 0) == false)
+    if (colorearUtil(mapa, colorAmnt, color, 0) == false)
     {
         cout << "Solution does not exist";
         return false;
     }
  
-    // Imprimir solucion
+    // imprimir solucion
     solucion(color);
     return true;
 }
  
-/* funcion para imprimir la solucion */
+// funcion para imprimir la solucion 
 void solucion(int color[])
 {
-    cout << "Solution Exists:"
-         << " Following are the assigned colors"
+    cout << "Solution exists:"
+         << " The assigned colors for the solution are"
          << "\n";
-    for(int i = 0; i < V; i++)
-        cout << " " << color[i] << " ";
+    
+    for(int cont = 0; cont < Vertc; cont++)
+        cout << " " << color[cont] << " ";
          
     cout << "\n";
 }
  
 int main()
 {   
-    bool mapa[V][V] = { { 1, 0, 0, 1, 0 },
-                        { 0, 1, 1, 0, 1 },
-                        { 0, 1, 0, 1, 0 },
-                        { 1, 1, 0, 0, 1 }, 
-                        { 0, 1, 1, 1, 1 }};
+    bool mapa[Vertc][Vertc] = { 
+        { 1, 0, 0, 1, 0, 0, 1 },
+        { 0, 1, 1, 0, 1, 1, 1 },
+        { 0, 1, 0, 1, 0, 1, 0 },
+        { 1, 1, 0, 0, 1, 0, 0 }, 
+        { 0, 1, 1, 1, 1, 0, 1 },
+        { 1, 0, 1, 1, 0, 1, 1 },
+        { 1, 0, 1, 0, 1, 0, 1 }};
                           
-    // Cantidad de colores
-    int n = 4;
-    colorear(mapa, n);
+    // cantidad de colores
+    int colorAmnt = 4;
+    colorear(mapa, colorAmnt);
     return 0;
 }
